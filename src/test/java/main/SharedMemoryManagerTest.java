@@ -101,5 +101,35 @@ class SharedMemoryManagerTest {
 
     @Nested
     class ReadAndWriteTest {
+        @ParameterizedTest
+        @MethodSource("generateIndicesExceptFrontPage")
+        @DisplayName("表ページ以外のページにデータが書き込まれない")
+        void isNotWrittenInPagesExceptFrontPage(Integer index) {
+            sharedMemoryManager.open();
+            sharedMemoryManager.write(0x00, 0x01);
+            sharedMemoryManager.close();
+            assertEquals(0, sharedMemoryManager.read(index));
+        }
+
+        @Test
+        @DisplayName("メモリページに書き込まれたデータを読み込める")
+        void readDataWrittenInMemoryPage() {
+            sharedMemoryManager.open();
+            sharedMemoryManager.write(0x00, 0x01);
+            sharedMemoryManager.close();
+            sharedMemoryManager.setFront(0);
+            int memoryPageData = sharedMemoryManager.read(0x00);
+            assertEquals(1, memoryPageData);
+        }
+
+        private static Stream<Integer> generateIndicesExceptFrontPage() {
+            Stream<Integer> streamIndices = Stream.of();
+
+            for (int i = 1; i < 16; i++) {
+                streamIndices = Stream.concat(streamIndices, Stream.of(i));
+            }
+            System.out.println(streamIndices);
+            return streamIndices;
+        }
     }
 }
