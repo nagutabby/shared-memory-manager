@@ -122,6 +122,17 @@ class SharedMemoryManagerTest {
             assertEquals(1, memoryPageData);
         }
 
+        @Test
+        @DisplayName("アドレスとして8ビットよりも大きい値が渡された場合は、その値の下位8ビットをアドレスとして用いる")
+        void receiveLowerEightBits() {
+            sharedMemoryManager.open();
+            sharedMemoryManager.write(0xffff, 0x01);
+            sharedMemoryManager.close();
+            sharedMemoryManager.setFront(0);
+            int memoryPageData = sharedMemoryManager.read(0xff);
+            assertEquals(1, memoryPageData);
+        }
+
         private static Stream<Integer> generateIndicesExceptFrontPage() {
             Stream<Integer> streamIndices = Stream.of();
 
