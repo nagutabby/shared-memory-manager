@@ -90,7 +90,7 @@ class SharedMemoryManagerTest {
         }
 
         @Test
-        @DisplayName("openメソッドが実行されてからcloseメソッドが実行されるまでの間ににデータを読み込もうとすると、ViolationExceptionが発生する")
+        @DisplayName("openメソッドが実行されてからcloseメソッドが実行されるまでの間にデータを読み込もうとすると、ViolationExceptionが発生する")
         void readDataBetweenOpeningAndClosing() {
             thread1.open();
             assertThrows(ViolationException.class, () -> thread2.read(0x00));
