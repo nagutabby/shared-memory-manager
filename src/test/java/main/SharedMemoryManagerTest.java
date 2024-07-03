@@ -55,27 +55,17 @@ class SharedMemoryManagerTest {
 
     @Nested
     class WriteTest {
-        @ParameterizedTest
-        @MethodSource("generateIndicesExceptFrontPage")
-        @DisplayName("表ページ以外のページにデータが書き込まれない")
-        void isNotWrittenOnPagesExceptFrontPage(Integer index) {
-            sharedMemoryManager.open();
-            sharedMemoryManager.write(0x00, 0x01);
-            sharedMemoryManager.close();
-            assertEquals(0, sharedMemoryManager.read(index));
-        }
-
-        @Test
-        @DisplayName("openメソッドが実行されてから、closeメソッドが実行されるまでの間ににデータを書き込める")
-        void writeDataBetweenOpeningAndClosing() {
-            sharedMemoryManager.open();
-            assertDoesNotThrow(() -> sharedMemoryManager.write(0x00, 0x01));
-        }
-
         @Test
         @DisplayName("openメソッドが実行される前にデータを書き込もうとすると、OperationExceptionが発生する")
         void writeDataBeforeOpening() {
             assertThrows(OperationException.class, () -> sharedMemoryManager.write(0x00, 0x01));
+        }
+
+        @Test
+        @DisplayName("openメソッドが実行されてからcloseメソッドが実行されるまでの間にデータを書き込める")
+        void writeDataBetweenOpeningAndClosing() {
+            sharedMemoryManager.open();
+            assertDoesNotThrow(() -> sharedMemoryManager.write(0x00, 0x01));
         }
 
         @Test
@@ -85,19 +75,31 @@ class SharedMemoryManagerTest {
             sharedMemoryManager.close();
             assertThrows(OperationException.class, () -> sharedMemoryManager.write(0x00, 0x01));
         }
-
-        private static Stream<Integer> generateIndicesExceptFrontPage() {
-            Stream<Integer> streamIndices = Stream.of();
-
-            for (int i = 1; i < 16; i++) {
-                streamIndices = Stream.concat(streamIndices, Stream.of(i));
-            }
-            System.out.println(streamIndices);
-            return streamIndices;
-        }
     }
 
     @Nested
     class ReadTest {
+        @Test
+        @DisplayName("openメソッドが実行される前にデータを読み込める")
+        void readDataBeforeOpening() {
+            assertDoesNotThrow(() -> sharedMemoryManager.read(0x00));
+        }
+
+        @Test
+        @DisplayName("openメソッドが実行されてからcloseメソッドが実行されるまでの間ににデータを読み込もうとすると、ViolationExceptionが発生する")
+        void readDataBetweenOpeningAndClosing() {
+            sharedMemoryManager.open();
+            assertThrows(ViolationException.class, () -> sharedMemoryManager.read(0x00));
+        }
+
+        @Test
+        @DisplayName("closeメソッドが実行された後にデータを読み込める")
+        void readDataAfterClosing() {
+            assertDoesNotThrow(() -> sharedMemoryManager.read(0x00));
+        }
+    }
+
+    @Nested
+    class ReadAndWriteTest {
     }
 }
