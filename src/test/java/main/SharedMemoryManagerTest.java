@@ -100,7 +100,7 @@ class SharedMemoryManagerTest {
     }
 
     @Nested
-    class ReadAndWriteTest {
+    class WriteAndReadTest {
         @ParameterizedTest
         @MethodSource("generateIndicesExceptFrontPage")
         @DisplayName("表ページ以外のページにデータが書き込まれない")
