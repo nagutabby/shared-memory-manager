@@ -9,6 +9,7 @@ public class SharedMemoryManager {
     private boolean isOpen = false;
 
     public void init() {
+        memoryPages.clear();
         for (int i = 0; i < 16; i++) {
             LinkedHashMap<Integer, Integer> memoryPage = new LinkedHashMap<>();
             memoryPages.add(memoryPage);
