@@ -4,28 +4,15 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 public class SharedMemoryManager {
-    private static ArrayList<LinkedHashMap<Integer, Integer>> memoryPages = new ArrayList<>(16);
-    private static int front;
-    private static boolean isOpen = false;
+    ArrayList<LinkedHashMap<Integer, Integer>> memoryPages = new ArrayList<>(16);
+    private int front;
+    private boolean isOpen = false;
 
-    public static void main(String[] args) {
+    public void init() {
         for (int i = 0; i < 16; i++) {
             LinkedHashMap<Integer, Integer> memoryPage = new LinkedHashMap<>();
             memoryPages.add(memoryPage);
 
-            for (int j = 0; j < 256; j++) {
-                memoryPages.get(i).put(j, null);
-            }
-        }
-        init();
-        open();
-        write(0xff, 0x01);
-        close();
-        System.out.println(read(0xff));
-    }
-
-    public static void init() {
-        for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 256; j++) {
                 memoryPages.get(i).put(j, 0);
             }
@@ -33,11 +20,11 @@ public class SharedMemoryManager {
         front = 0;
     };
 
-    public static void open() {
+    public void open() {
         isOpen = true;
     }
 
-    public static void close() {
+    public void close() {
         if (front == 15) {
             front = 0;
         } else {
@@ -46,7 +33,7 @@ public class SharedMemoryManager {
         isOpen = false;
     }
 
-    public static void write(int inputAddress, int data) {
+    public void write(int inputAddress, int data) {
         int lowerEightBitsAddress = inputAddress & 0xff;
         if (isOpen) {
             memoryPages.get(front).put(lowerEightBitsAddress, data);
@@ -55,12 +42,16 @@ public class SharedMemoryManager {
         }
     }
 
-    public static int read(int address) {
+    public int read(int address) {
         if (isOpen) {
             throw new ViolationException("Violation error occured");
         } else {
             int memoryPageData = memoryPages.get(front).get(address);
             return memoryPageData;
         }
+    }
+
+    void setFront(int front) {
+        this.front = front;
     }
 }
