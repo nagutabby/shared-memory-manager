@@ -4,14 +4,16 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 public class SharedMemoryManager {
-    ArrayList<LinkedHashMap<Integer, Integer>> memoryPages = new ArrayList<>(16);
-    private int front;
-    private boolean isOpen = false;
+    public static ArrayList<LinkedHashMap<Integer, Integer>> memoryPages = new ArrayList<>(16);
+    private static LinkedHashMap<Integer, Integer> memoryPage = new LinkedHashMap<>();
+    private static int front;
+    private static boolean isOpen;
 
     public void init() {
+        isOpen = false;
+        front = 0;
         memoryPages.clear();
         for (int i = 0; i < 16; i++) {
-            LinkedHashMap<Integer, Integer> memoryPage = new LinkedHashMap<>();
             memoryPages.add(memoryPage);
 
             for (int j = 0; j < 256; j++) {
@@ -52,7 +54,7 @@ public class SharedMemoryManager {
         }
     }
 
-    void setFront(int front) {
-        this.front = front;
+    void setFront(int nextFront) {
+        front = nextFront;
     }
 }

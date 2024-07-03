@@ -26,20 +26,20 @@ class SharedMemoryManagerTest {
         @Test
         @DisplayName("共有メモリマネージャーが管理するページ数は16である")
         void getSharedMemoryPageSize() {
-            assertEquals(16, sharedMemoryManager.memoryPages.size());
+            assertEquals(16, SharedMemoryManager.memoryPages.size());
         }
 
         @ParameterizedTest
         @MethodSource("generateIndices")
         @DisplayName("それぞれのメモリページが持つアドレス数は256である")
         void getSharedMemoryAddressSize(Integer index) {
-            assertEquals(256, sharedMemoryManager.memoryPages.get(index).size());
+            assertEquals(256, SharedMemoryManager.memoryPages.get(index).size());
         }
 
         @Test
         @DisplayName("メモリページのデータ型はLinkedHashMap<Integer, Integer>である")
         void getMemoryPageType() {
-            assertTrue(sharedMemoryManager.memoryPages.get(0) instanceof LinkedHashMap<Integer, Integer>);
+            assertTrue(SharedMemoryManager.memoryPages.get(0) instanceof LinkedHashMap<Integer, Integer>);
         }
 
         private static Stream<Integer> generateIndices() {
