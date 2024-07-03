@@ -30,15 +30,15 @@ nagutabby@MacBook-Pro.local /Users/nagutabby/shared-memory-manager-simulator [ma
 [INFO] Running main.SharedMemoryManagerTest
 [INFO] Running main.SharedMemoryManagerTest$DataStructureTest
 java.util.stream.ReferencePipeline$Head@359f7cdf
-[INFO] Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.063 s -- in main.SharedMemoryManagerTest$DataStructureTest
+[INFO] Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.057 s -- in main.SharedMemoryManagerTest$DataStructureTest
 [INFO] Running main.SharedMemoryManagerTest$ReadTest
 [INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in main.SharedMemoryManagerTest$ReadTest
 [INFO] Running main.SharedMemoryManagerTest$WriteAndReadTest
 java.util.stream.ReferencePipeline$Head@557caf28
-[INFO] Tests run: 17, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s -- in main.SharedMemoryManagerTest$WriteAndReadTest
+[INFO] Tests run: 17, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s -- in main.SharedMemoryManagerTest$WriteAndReadTest
 [INFO] Running main.SharedMemoryManagerTest$WriteTest
-[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in main.SharedMemoryManagerTest$WriteTest
-[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.090 s -- in main.SharedMemoryManagerTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in main.SharedMemoryManagerTest$WriteTest
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.086 s -- in main.SharedMemoryManagerTest
 [INFO]
 [INFO] Results:
 [INFO]
@@ -47,6 +47,6 @@ java.util.stream.ReferencePipeline$Head@557caf28
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  0.729 s
-[INFO] Finished at: 2024-07-04T02:53:32+09:00
+[INFO] Total time:  0.773 s
+[INFO] Finished at: 2024-07-04T04:30:10+09:00
 [INFO] ------------------------------------------------------------------------
