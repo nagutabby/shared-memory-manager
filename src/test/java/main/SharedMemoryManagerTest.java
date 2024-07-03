@@ -13,12 +13,16 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class SharedMemoryManagerTest {
-    private static SharedMemoryManager sharedMemoryManager;
+    private static SharedMemoryManager thread1;
+    private static SharedMemoryManager thread2;
 
     @BeforeEach
     public void init() {
-        sharedMemoryManager = new SharedMemoryManager();
-        sharedMemoryManager.init();
+        thread1 = new SharedMemoryManager();
+        thread2 = new SharedMemoryManager();
+
+        thread1.init();
+        thread2.init();
     }
 
     @Nested
@@ -58,22 +62,22 @@ class SharedMemoryManagerTest {
         @Test
         @DisplayName("openメソッドが実行される前にデータを書き込もうとすると、OperationExceptionが発生する")
         void writeDataBeforeOpening() {
-            assertThrows(OperationException.class, () -> sharedMemoryManager.write(0x00, 0x01));
+            assertThrows(OperationException.class, () -> thread1.write(0x00, 0x01));
         }
 
         @Test
         @DisplayName("openメソッドが実行されてからcloseメソッドが実行されるまでの間にデータを書き込める")
         void writeDataBetweenOpeningAndClosing() {
-            sharedMemoryManager.open();
-            assertDoesNotThrow(() -> sharedMemoryManager.write(0x00, 0x01));
+            thread1.open();
+            assertDoesNotThrow(() -> thread1.write(0x00, 0x01));
         }
 
         @Test
         @DisplayName("closeメソッドが実行された後にデータを書き込もうとすると、OperationExceptionが発生する")
         void writeDataAfterClosing() {
-            sharedMemoryManager.open();
-            sharedMemoryManager.close();
-            assertThrows(OperationException.class, () -> sharedMemoryManager.write(0x00, 0x01));
+            thread1.open();
+            thread1.close();
+            assertThrows(OperationException.class, () -> thread1.write(0x00, 0x01));
         }
     }
 
@@ -82,20 +86,22 @@ class SharedMemoryManagerTest {
         @Test
         @DisplayName("openメソッドが実行される前にデータを読み込める")
         void readDataBeforeOpening() {
-            assertDoesNotThrow(() -> sharedMemoryManager.read(0x00));
+            assertDoesNotThrow(() -> thread1.read(0x00));
         }
 
         @Test
         @DisplayName("openメソッドが実行されてからcloseメソッドが実行されるまでの間ににデータを読み込もうとすると、ViolationExceptionが発生する")
         void readDataBetweenOpeningAndClosing() {
-            sharedMemoryManager.open();
-            assertThrows(ViolationException.class, () -> sharedMemoryManager.read(0x00));
+            thread1.open();
+            assertThrows(ViolationException.class, () -> thread2.read(0x00));
         }
 
         @Test
         @DisplayName("closeメソッドが実行された後にデータを読み込める")
         void readDataAfterClosing() {
-            assertDoesNotThrow(() -> sharedMemoryManager.read(0x00));
+            thread1.open();
+            thread1.close();
+            assertDoesNotThrow(() -> thread2.read(0x00));
         }
     }
 
@@ -105,31 +111,32 @@ class SharedMemoryManagerTest {
         @MethodSource("generateIndicesExceptFrontPage")
         @DisplayName("表ページ以外のページにデータが書き込まれない")
         void isNotWrittenInPagesExceptFrontPage(Integer index) {
-            sharedMemoryManager.open();
-            sharedMemoryManager.write(0x00, 0x01);
-            sharedMemoryManager.close();
-            assertEquals(0, sharedMemoryManager.read(index));
+            thread1.open();
+            thread1.write(0x00, 0x01);
+            thread1.close();
+            SharedMemoryManager.setFront(0);
+            assertEquals(0, thread2.read(index));
         }
 
         @Test
         @DisplayName("メモリページに書き込まれたデータを読み込める")
         void readDataWrittenInMemoryPage() {
-            sharedMemoryManager.open();
-            sharedMemoryManager.write(0x00, 0x01);
-            sharedMemoryManager.close();
-            sharedMemoryManager.setFront(0);
-            int memoryPageData = sharedMemoryManager.read(0x00);
+            thread1.open();
+            thread1.write(0x00, 0x01);
+            thread1.close();
+            SharedMemoryManager.setFront(0);
+            int memoryPageData = thread2.read(0x00);
             assertEquals(1, memoryPageData);
         }
 
         @Test
         @DisplayName("アドレスとして8ビットよりも大きい値が渡された場合は、その値の下位8ビットをアドレスとして用いる")
         void receiveLowerEightBits() {
-            sharedMemoryManager.open();
-            sharedMemoryManager.write(0xffff, 0x01);
-            sharedMemoryManager.close();
-            sharedMemoryManager.setFront(0);
-            int memoryPageData = sharedMemoryManager.read(0xff);
+            thread1.open();
+            thread1.write(0xffff, 0x01);
+            thread1.close();
+            SharedMemoryManager.setFront(0);
+            int memoryPageData = thread2.read(0xff);
             assertEquals(1, memoryPageData);
         }
 

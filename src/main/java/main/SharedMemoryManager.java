@@ -54,7 +54,7 @@ public class SharedMemoryManager {
         }
     }
 
-    void setFront(int nextFront) {
+    static void setFront(int nextFront) {
         front = nextFront;
     }
 }
